@@ -14,12 +14,6 @@ export default class TripleA extends React.Component {
             loading: false,
             initialValues: null,
             tripleASchema: Yup.object().shape({
-                tokenurl: Yup.string()
-                    .required("Token Url is required"),
-                paymenturl: Yup.string()
-                    .required("Payment Url is required"),
-                payouturl: Yup.string()
-                    .required("Payout Url is required"),
                 client_id: Yup.string()
                     .required("Client ID is required"),
                 client_secret: Yup.string()
@@ -34,6 +28,10 @@ export default class TripleA extends React.Component {
                     .required("ETH Api ID is required"),
                 usdt_api_id: Yup.string()
                     .required("USDT Api ID is required"),
+                usdc_api_id: Yup.string()
+                    .required("USDC Api ID is required"),
+                binance_api_id: Yup.string()
+                    .required("Binance Api ID is required"),
                 merchant_key: Yup.string()
                     .required("Merchant Key is required"),
                 testMode: Yup.bool()
@@ -51,16 +49,22 @@ export default class TripleA extends React.Component {
                 if (data) {
                     this.setState({
                         initialValues: {
-                            ...data.value,
+                            client_id: data.value.client_id ? data.value.client_id : "",
+                            client_secret: data.value.client_secret ? data.value.client_secret : "",
+                            notify_secret: data.value.notify_secret ? data.value.notify_secret : "",
+                            btc_api_id: data.value.btc_api_id ? data.value.btc_api_id : "",
+                            test_btc_api_id: data.value.test_btc_api_id ? data.value.test_btc_api_id : "",
+                            eth_api_id: data.value.eth_api_id ? data.value.eth_api_id : "",
+                            usdt_api_id: data.value.usdt_api_id ? data.value.usdt_api_id : "",
+                            usdc_api_id: data.value.usdc_api_id ? data.value.usdc_api_id : "",
+                            binance_api_id: data.value.binance_api_id ? data.value.binance_api_id : "",
+                            merchant_key: data.value.merchant_key ? data.value.merchant_key : "",
                             testMode: data.value.testMode ? 'true' : 'false'
                         }, loading: false
                     });
                 } else {
                     this.setState({
                         initialValues: {
-                            tokenurl: "",
-                            paymenturl: "",
-                            payouturl: "",
                             client_id: "",
                             client_secret: "",
                             notify_secret: "",
@@ -68,6 +72,8 @@ export default class TripleA extends React.Component {
                             test_btc_api_id: "",
                             eth_api_id: "",
                             usdt_api_id: "",
+                            usdc_api_id: "",
+                            binance_api_id: "",
                             merchant_key: "",
                             testMode: ""
                         }, loading: false
@@ -176,39 +182,6 @@ export default class TripleA extends React.Component {
                             )}
 
                             <div className="form-group">
-                                <label>Token Url<span className="text-danger">*</span></label>
-                                <input type="text" name="tokenurl" className={`form-control ${getInputClasses(formik, "tokenurl")}`}
-                                    {...formik.getFieldProps("tokenurl")}
-                                    placeholder="Token Url" />
-                                {formik.touched.tokenurl && formik.errors.tokenurl ? (
-                                    <div className="invalid-feedback">
-                                        {formik.errors.tokenurl}
-                                    </div>
-                                ) : null}
-                            </div>
-                            <div className="form-group">
-                                <label>Payment Url<span className="text-danger">*</span></label>
-                                <input type="text" name="paymenturl" className={`form-control ${getInputClasses(formik, "paymenturl")}`}
-                                    {...formik.getFieldProps("paymenturl")}
-                                    placeholder="Payment Url" />
-                                {formik.touched.paymenturl && formik.errors.paymenturl ? (
-                                    <div className="invalid-feedback">
-                                        {formik.errors.paymenturl}
-                                    </div>
-                                ) : null}
-                            </div>
-                            <div className="form-group">
-                                <label>Payout Url<span className="text-danger">*</span></label>
-                                <input type="text" name="payouturl" className={`form-control ${getInputClasses(formik, "payouturl")}`}
-                                    {...formik.getFieldProps("payouturl")}
-                                    placeholder="Payout Url" />
-                                {formik.touched.payouturl && formik.errors.payouturl ? (
-                                    <div className="invalid-feedback">
-                                        {formik.errors.payouturl}
-                                    </div>
-                                ) : null}
-                            </div>
-                            <div className="form-group">
                                 <label>Client ID<span className="text-danger">*</span></label>
                                 <input type="text" name="client_id" className={`form-control ${getInputClasses(formik, "client_id")}`}
                                     {...formik.getFieldProps("client_id")}
@@ -282,6 +255,28 @@ export default class TripleA extends React.Component {
                                 {formik.touched.usdt_api_id && formik.errors.usdt_api_id ? (
                                     <div className="invalid-feedback">
                                         {formik.errors.usdt_api_id}
+                                    </div>
+                                ) : null}
+                            </div>
+                            <div className="form-group">
+                                <label>USDC Api ID<span className="text-danger">*</span></label>
+                                <input type="text" name="usdc_api_id" className={`form-control ${getInputClasses(formik, "usdc_api_id")}`}
+                                    {...formik.getFieldProps("usdc_api_id")}
+                                    placeholder="USDC Api ID" />
+                                {formik.touched.usdc_api_id && formik.errors.usdc_api_id ? (
+                                    <div className="invalid-feedback">
+                                        {formik.errors.usdc_api_id}
+                                    </div>
+                                ) : null}
+                            </div>
+                            <div className="form-group">
+                                <label>Binance Api ID<span className="text-danger">*</span></label>
+                                <input type="text" name="binance_api_id" className={`form-control ${getInputClasses(formik, "binance_api_id")}`}
+                                    {...formik.getFieldProps("binance_api_id")}
+                                    placeholder="Binance Api ID" />
+                                {formik.touched.binance_api_id && formik.errors.binance_api_id ? (
+                                    <div className="invalid-feedback">
+                                        {formik.errors.binance_api_id}
                                     </div>
                                 ) : null}
                             </div>
