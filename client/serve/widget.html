@@ -16,11 +16,14 @@
     <script type="text/babel">
         const { useState, useEffect, Fragment, useRef } = React
         const API_URL = 'https://api.payperwin.com';
-
+        const leagues = [
+            { sport: 'basketball', league: '10041830', name: 'NBA' },
+            { sport: 'ice-hockey', league: '10037477', name: 'NHL' },
+            { sport: 'baseball', league: '10037485', name: 'MLB' },
+        ]
         const App = (props) => {
-            const [currentEvent, setCurrentEvent] = useState('NBA');
-            const [NBAEvents, setNBAEvents] = useState([]);
-            const [NHLEvents, setNHLEvents] = useState([]);
+            const [currentLeague, setCurrentLeague] = useState(leagues[0]);
+            const [events, setEvents] = useState([]);
             const [showLeft, setShowLeft] = useState(false);
             const [showRight, setShowRight] = useState(true);
             const [loading, setLoading] = useState(false);
@@ -28,22 +31,27 @@
 
             useEffect(() => {
                 setLoading(true);
-                axios.get(`${API_URL}/widget`).then(response => {
+                axios.get(`${API_URL}/widget`, { params: currentLeague }).then(response => {
                     if (response.data.success) {
-                        const { NBAEvents, NHLEvents } = response.data;
-                        setNBAEvents(getLocalEvents(NBAEvents, 'basketball', '10041830'));
-                        setNHLEvents(getLocalEvents(NHLEvents, 'ice-hockey', '10037477'));
+                        const { events } = response.data;
+                        if (events)
+                            setEvents(getLocalEvents(events, currentLeague.sport, currentLeague.league));
                     }
                     setLoading(false);
+
                 }).catch((error) => {
                     setLoading(false);
                 });
-            }, []);
+            }, [currentLeague]);
 
-            const getLocalEvents = (_Events, sportName, leagueId) => {
+            useEffect(() => {
+                scrollStart();
+            }, [events])
+
+            const getLocalEvents = (events, sport, league) => {
                 const TODAY = new Date().getDate();
                 const TOMONTH = new Date().toLocaleString('default', { month: 'short' });
-                return _Events.map(event => {
+                return events.map(event => {
                     const startDate = new Date(event.startDate);
                     const date = startDate.getDate();
                     const month = startDate.toLocaleString('default', { month: 'short' });
@@ -68,9 +76,17 @@
                     return {
                         day, date, month, time,
                         teamA, teamB, logo_teamA, logo_teamB,
-                        originId, moneyline, sportName, leagueId
+                        originId, moneyline, sport, league
                     };
                 });
+            }
+
+            const scrollStart = () => {
+                const offsetWidth = listRef.current?.offsetWidth;
+                const scrollWidth = listRef.current?.scrollWidth;
+                listRef.current?.scrollTo({ left: 0, behavior: 'smooth' })
+                setShowRight(true);
+                setShowLeft(false)
             }
 
             const onScroll = () => {
@@ -102,10 +118,10 @@
                 setShowLeft(newPos != 0)
             }
 
-            const renderEvents = (_Events) => {
-                return _Events.map((event, index) => {
+            const renderEvents = (events) => {
+                return events.map((event, index) => {
                     return <Fragment key={index}>
-                        {(index == 0 || _Events[index - 1].date != event.date || _Events[index - 1].month != event.month) &&
+                        {(index == 0 || events[index - 1].date != event.date || events[index - 1].month != event.month) &&
                             <div className="MatchupBar_gameDate__6Mq2g">
                                 <div className="MatchupBar_weekdayLabel__ogPgP">{event.day}</div>
                                 <div className="MatchupBar_dayLabel__2nQmK">{event.date}</div>
@@ -145,10 +161,15 @@
                                 className="MuiInputBase-root MuiInput-root MatchupBarLeagueSelector_root__3xY-P MuiInputBase-formControl MuiInput-formControl">
                                 <select
                                     className="MuiNativeSelect-root MuiNativeSelect-select MuiNativeSelect-filled MuiInputBase-input MuiInput-input"
-                                    aria-invalid="false" name="leagues" aria-label="Select League" onChange={(event) => setCurrentEvent(event.target.value)}
-                                    value={currentEvent}>
-                                    <option value="NBA">NBA</option>
-                                    <option value="NHL">NHL</option>
+                                    aria-invalid="false" name="leagues" aria-label="Select League" onChange={(event) => {
+                                        const league_id = event.target.value;
+                                        const league = leagues.find(league => league.league == league_id);
+                                        league && setCurrentLeague(league);
+                                    }}
+                                    value={currentLeague.league}>
+                                    {leagues.map((league, index) =>
+                                        <option key={index} value={league.league}>{league.name}</option>
+                                    )}
                                 </select><svg className="MuiSvgIcon-root MuiNativeSelect-icon MuiNativeSelect-iconFilled"
                                     focusable="false" viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M7 10l5 5 5-5z"></path>
@@ -167,7 +188,7 @@
                                     <div className="MatchupBar_controlFadePrevious__1ws3M"></div>
                                     <i className='fas fa-chevron-left' />
                                 </div>}
-                                {renderEvents(currentEvent == 'NBA' ? NBAEvents : NHLEvents)}
+                                {renderEvents(events)}
                                 {showRight && <div tabIndex="0" role="button" className="MatchupBar_control__25aPS MatchupBar_nextControl__2_oOw" onClick={scrollRight}>
                                     <div className="MatchupBar_controlFadeNext__2Tk5o"></div>
                                     <i className='fas fa-chevron-right' />
